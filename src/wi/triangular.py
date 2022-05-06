@@ -27,7 +27,11 @@ def check_if_triangular_using_math_eq(x: int) -> bool:
     return root.is_integer()
 
 
-def gen_triangular_number():
+def triangular_numbers_gen():
+    """
+    Generator returning triangular numbers starting from 0.
+    :return: triangular numbers generator
+    """
     return itertools.accumulate(itertools.count(0))
 
 
@@ -39,7 +43,7 @@ def check_if_triangular_using_generator(x: int) -> bool:
     :param x: number to test if it's triangular
     :return: True if given x is a triangular number
     """
-    triangular_gen = gen_triangular_number()
+    triangular_gen = triangular_numbers_gen()
     triangular_number = next(triangular_gen)
     while True:
         if triangular_number > x:
