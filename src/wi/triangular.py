@@ -35,6 +35,21 @@ def triangular_numbers_gen():
     return itertools.accumulate(itertools.count(0))
 
 
+def triangular_numbers_gen2():
+    """
+    Generator returning triangular numbers starting from 0.
+    NOT using itertools ;)
+    :return: triangular numbers generator
+    """
+    n = 0
+    i = 1
+    yield n
+    while True:
+        n = n + i
+        yield n
+        i = i + 1
+
+
 def check_if_triangular_using_generator(x: int) -> bool:
     """
     O(sqrt(x)) - time complexity
