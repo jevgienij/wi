@@ -32,6 +32,13 @@ def gen_triangular_number():
 
 
 def check_if_triangular_using_generator(x: int) -> bool:
+    """
+    O(sqrt(x)) - time complexity
+    O(1) - space complexity
+
+    :param x: number to test if it's triangular
+    :return: True if given x is a triangular number
+    """
     triangular_gen = gen_triangular_number()
     triangular_number = next(triangular_gen)
     while True:
