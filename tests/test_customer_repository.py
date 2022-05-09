@@ -106,10 +106,45 @@ class TestCustomerRepository:
         assert actual == expected
 
     @pytest.fixture
-    def mocked_collection(self, when):
+    def mocked_collection(self, when, customer0):
         collection = mock(pymongo.collection.Collection)
-        when(collection).replace_one(...).thenReturn(None)
-        when(collection).find_one().thenReturn(None)
+        when(collection).replace_one(asdict(customer0)).thenReturn(None)
+        when(collection).find_one({'customer_id': customer0.customer_id}).thenReturn(asdict(customer0))
+        when(collection).find_one_and_delete({'customer_id': customer0.customer_id}).thenReturn(asdict(customer0))
+        when(collection).find({'name': customer0.name}).thenReturn([asdict(customer0)])
         return collection
 
+    def test_mocked_collection_set_returns_none_and_invokes_replace_one(self, mocked_collection, customer0, verify):
+        repo = CustomerRepository(mocked_collection)
+        actual = repo.set(customer0)
 
+        verify(mocked_collection).replace_one(asdict(customer0))
+        assert actual is None
+
+    def test_mocked_collection_get_returns_dict_and_invokes_find_one(self, mocked_collection, customer0, verify):
+        repo = CustomerRepository(mocked_collection)
+        actual = repo.get(customer0)
+        expected = asdict(customer0)
+
+        verify(mocked_collection).find_one({'customer_id': customer0.customer_id})
+        assert actual is expected
+
+    def test_mocked_collection_pop_returns_dict_and_invokes_find_one_and_delete(
+            self, mocked_collection, customer0, verify
+    ):
+        repo = CustomerRepository(mocked_collection)
+        actual = repo.pop(customer0)
+        expected = asdict(customer0)
+
+        verify(mocked_collection).find_one_and_delete({'customer_id': customer0.customer_id})
+        assert actual is expected
+
+    def test_mocked_collection_find_returns_list_of_dicts_and_invokes_find(
+            self, mocked_collection, customer0, verify
+    ):
+        repo = CustomerRepository(mocked_collection)
+        actual = repo.find(customer0)
+        expected = [asdict(customer0)]
+
+        verify(mocked_collection).find({'name': customer0.name})
+        assert actual is expected
