@@ -1,4 +1,5 @@
 import pytest
+from dataclasses import asdict
 from mockito import mock, ANY
 from typing import (
     Iterable,
@@ -76,31 +77,31 @@ class TestCustomerRepository:
         assert repo._collection == expected
 
     def test_get_customer_in_repo_returns_customer_dto(
-            self, fake_collection, customer0, customer0_dict
+            self, fake_collection, customer0
     ):
         repo = CustomerRepository(fake_collection)
         actual = repo.get(customer0.customer_id)
-        expected = customer0_dict
+        expected = asdict(customer0)
 
         assert actual == expected
 
     def test_pop_customer_in_repo_returns_customer_dto_and_removes_from_collection(
-            self, fake_collection, customer0, customer0_dict, customer1_dict
+            self, fake_collection, customer0, customer1_dict
     ):
         repo = CustomerRepository(fake_collection)
         actual = repo.pop(customer0.customer_id)
-        expected = customer0_dict
+        expected = asdict(customer0)
         expected_collection = {customer1_dict}
 
         assert actual == expected
         assert repo._collection == expected_collection
 
     def test_find_customer_in_repo_returns_list_customer_dto(
-            self, fake_collection, customer1, customer1_dict
+            self, fake_collection, customer1
     ):
         repo = CustomerRepository(fake_collection)
         actual = repo.find(customer1.name)
-        expected = [customer1_dict]
+        expected = [asdict(customer1)]
 
         assert actual == expected
 
